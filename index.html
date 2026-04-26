@@ -133,7 +133,9 @@
     /* ── RESPONSIVE ── */
     @media(max-width:900px){
       nav{padding:1rem 1.4rem}nav.stuck{padding:.7rem 1.4rem}
-      .navl{gap:1.2rem}.navl li:nth-child(n+5){display:none}
+      .navl{gap:0;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:none;flex-wrap:nowrap;padding-bottom:2px}
+      .navl::-webkit-scrollbar{display:none}
+      .navl li{flex-shrink:0}
       .hcon{padding:5rem 1.4rem 0}.hstats{display:none}
       #home-services{padding:4rem 1.4rem}
       .ghd{padding:0 1.4rem}.filters{padding:.8rem 1.4rem 1.4rem}
