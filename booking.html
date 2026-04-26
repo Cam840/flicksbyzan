@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>Book & Pay — FlicksByZan</title>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@300;400;500;700&family=Libre+Baskerville:ital,wght@0,400;1,400&family=Barlow:wght@300;400&display=swap" rel="stylesheet"/>
+  <style>
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+    :root{--ink:#050507;--dark:#0a0a0c;--panel:#111114;--card:#18181c;--silver:#dcdce8;--silver2:#b0b0c4;--chrome:#f0f0f8;--dim:#585868;--Fh:'Oswald',sans-serif;--Fs:'Libre Baskerville',serif;--Fb:'Barlow',sans-serif;}
+    html{scroll-behavior:smooth}
+    body{background:var(--ink);color:var(--chrome);font-family:var(--Fb);font-weight:300;cursor:none;overflow-x:hidden}
+    #cd{position:fixed;top:0;left:0;z-index:9999;width:8px;height:8px;border-radius:50%;background:var(--silver);pointer-events:none;transform:translate(-50%,-50%);transition:width .15s}
+    body:has(a:hover) #cd{width:14px;background:var(--chrome)}
+    nav{position:fixed;top:0;left:0;right:0;z-index:200;display:flex;align-items:center;justify-content:space-between;padding:1.4rem 3rem;background:rgba(5,5,7,.97);border-bottom:1px solid rgba(200,200,208,.1)}
+    .logo{font-family:var(--Fh);font-size:1.45rem;font-weight:700;letter-spacing:.14em;color:var(--chrome);text-decoration:none}.logo span{color:var(--silver2)}
+    .navl{display:flex;gap:2rem;list-style:none;align-items:center}
+    .navl a{font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--dim);text-decoration:none;transition:color .2s}
+    .navl a:hover,.navl a.active{color:var(--silver)}
+    .ncta{font-family:var(--Fh);font-size:.75rem;letter-spacing:.16em;text-transform:uppercase;background:var(--silver);color:var(--ink);padding:.55rem 1.4rem;text-decoration:none;transition:background .2s}
+    .ncta:hover{background:var(--chrome)}
+    .hamburger{display:none;flex-direction:column;gap:5px;background:none;border:none;cursor:none;padding:4px;z-index:300}
+    .hamburger span{display:block;width:26px;height:2px;background:var(--silver);transition:transform .3s,opacity .3s}
+    .hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+    .hamburger.open span:nth-child(2){opacity:0}
+    .hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+    .mobile-menu{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(5,5,7,.98);backdrop-filter:blur(20px);z-index:250;flex-direction:column;align-items:center;justify-content:center;gap:2.4rem;opacity:0;transition:opacity .35s;pointer-events:none}
+    .mobile-menu.open{opacity:1;pointer-events:all}
+    .mobile-menu a{font-family:var(--Fh);font-size:2rem;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dim);text-decoration:none;transform:translateY(10px);transition:color .2s,transform .35s}
+    .mobile-menu.open a{transform:translateY(0)}
+    .mobile-menu a:hover{color:var(--chrome)}
+    .mobile-menu .m-cta{margin-top:.8rem;background:var(--silver);color:var(--ink);padding:.8rem 2.4rem;font-size:1.2rem}
+    .mobile-menu .m-close{position:absolute;top:1.4rem;right:1.6rem;font-size:1.8rem;color:var(--dim);background:none;border:none;cursor:none;font-family:var(--Fh)}
+    .sl{font-size:.66rem;letter-spacing:.3em;text-transform:uppercase;color:var(--silver2);margin-bottom:.9rem}
+    .st{font-family:var(--Fh);font-size:clamp(2.4rem,6vw,5rem);font-weight:700;text-transform:uppercase;line-height:.95;letter-spacing:.04em}
+    .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
+    .reveal.on{opacity:1;transform:none}
+
+    .page-hero{padding:10rem 3rem 4rem;background:var(--dark);border-bottom:1px solid rgba(200,200,208,.07)}
+    .ph-sub{font-size:.9rem;color:var(--dim);margin-top:1rem;max-width:540px;line-height:1.7}
+
+    .how-section{padding:4rem 3rem;background:var(--panel);border-bottom:1px solid rgba(200,200,208,.07)}
+    .steps{display:flex;gap:0;margin-top:2rem}
+    .step{flex:1;padding:1.8rem 2rem;position:relative}
+    .step::after{content:'→';position:absolute;right:-8px;top:50%;transform:translateY(-50%);font-size:1.2rem;color:var(--dim)}
+    .step:last-child::after{display:none}
+    .step-num{font-family:var(--Fh);font-size:3rem;font-weight:700;color:rgba(200,200,208,.08);line-height:1;margin-bottom:.4rem}
+    .step-title{font-family:var(--Fh);font-size:1rem;font-weight:500;text-transform:uppercase;letter-spacing:.08em;color:var(--chrome);margin-bottom:.5rem}
+    .step-desc{font-size:.8rem;line-height:1.75;color:var(--dim)}
+
+    .booking-main{padding:5rem 3rem;background:var(--ink);display:grid;grid-template-columns:3fr 2fr;gap:4rem;align-items:start}
+    .bform{display:flex;flex-direction:column;gap:1.1rem}
+    .bform h2{font-family:var(--Fh);font-size:1.6rem;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--chrome);margin-bottom:.4rem}
+    .bform .hint{font-size:.8rem;color:var(--dim);margin-bottom:.6rem;line-height:1.6}
+    .fg{display:flex;flex-direction:column;gap:.4rem}
+    .fg label{font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;color:var(--dim)}
+    .fg input,.fg textarea,.fg select{background:rgba(255,255,255,.03);border:1px solid rgba(200,200,208,.1);color:var(--chrome);font-family:var(--Fb);font-size:.9rem;padding:.9rem 1rem;outline:none;border-radius:0;width:100%;-webkit-appearance:none;transition:border-color .2s}
+    .fg input:focus,.fg textarea:focus,.fg select:focus{border-color:rgba(200,200,208,.4)}
+    .fg select option{background:var(--panel)}
+    .fg textarea{min-height:100px;resize:vertical}
+    .fr{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+    .pay-methods{display:grid;grid-template-columns:1fr 1fr;gap:.8rem;margin-top:.4rem}
+    .pay-opt{position:relative}
+    .pay-opt input[type=radio]{position:absolute;opacity:0;width:0;height:0}
+    .pay-opt label{display:flex;align-items:center;gap:.8rem;padding:1rem 1.2rem;border:1px solid rgba(200,200,208,.1);background:rgba(255,255,255,.02);cursor:none;transition:border-color .2s,background .2s;font-size:.82rem;color:var(--silver2)}
+    .pay-opt label .pi{font-size:1.3rem}
+    .pay-opt label .pname{font-family:var(--Fh);font-size:.82rem;letter-spacing:.1em;text-transform:uppercase;color:var(--chrome)}
+    .pay-opt input:checked+label{border-color:var(--silver);background:rgba(200,200,208,.06)}
+    .deposit-note{background:var(--panel);border:1px solid rgba(200,200,208,.08);padding:1.2rem 1.4rem;font-size:.8rem;line-height:1.7;color:var(--dim);margin-top:.4rem}
+    .deposit-note strong{color:var(--silver2)}
+    .submit-btn{background:var(--silver);color:var(--ink);border:none;padding:1.2rem 2rem;font-family:var(--Fh);font-size:.95rem;letter-spacing:.2em;text-transform:uppercase;cursor:none;width:100%;transition:background .2s;margin-top:.5rem}
+    .submit-btn:hover{background:var(--chrome)}
+
+    .booking-sidebar{display:flex;flex-direction:column;gap:1.4rem;position:sticky;top:100px}
+    .side-card{background:var(--panel);border:1px solid rgba(200,200,208,.08);padding:2rem}
+    .side-card h3{font-family:var(--Fh);font-size:1rem;font-weight:500;text-transform:uppercase;letter-spacing:.1em;color:var(--chrome);margin-bottom:1.2rem;padding-bottom:.8rem;border-bottom:1px solid rgba(200,200,208,.07)}
+    .side-card ul{list-style:none;display:flex;flex-direction:column;gap:.7rem}
+    .side-card li{font-size:.82rem;color:var(--dim);display:flex;justify-content:space-between;align-items:center}
+    .side-card li strong{color:var(--silver2)}
+    .pay-btn-row{display:flex;flex-direction:column;gap:.7rem}
+    .pay-direct-btn{display:flex;align-items:center;gap:.8rem;padding:1rem 1.2rem;text-decoration:none;border:1px solid rgba(200,200,208,.1);transition:border-color .2s,background .2s;color:var(--chrome)}
+    .pay-direct-btn:hover{border-color:rgba(200,200,208,.3);background:rgba(200,200,208,.04)}
+    .pay-direct-btn .picon{font-size:1.2rem}
+    .pay-direct-btn .ptext .pn{font-family:var(--Fh);font-size:.85rem;letter-spacing:.1em;text-transform:uppercase;color:var(--chrome)}
+    .pay-direct-btn .ptext .ph{font-size:.72rem;color:var(--dim)}
+    .pay-direct-btn .parrow{margin-left:auto;color:var(--dim);font-size:.8rem}
+    .contact-side a{display:block;font-size:.82rem;color:var(--dim);text-decoration:none;margin-top:.6rem;transition:color .2s}
+    .contact-side a:hover{color:var(--silver)}
+
+    .modal-overlay{display:none;position:fixed;inset:0;background:rgba(5,5,7,.92);z-index:1000;align-items:center;justify-content:center}
+    .modal-overlay.show{display:flex}
+    .modal{background:var(--panel);border:1px solid rgba(200,200,208,.15);padding:3.5rem;max-width:480px;width:90%;text-align:center}
+    .modal .mi{font-size:3rem;margin-bottom:1.2rem}
+    .modal h2{font-family:var(--Fh);font-size:1.8rem;font-weight:700;text-transform:uppercase;color:var(--chrome);margin-bottom:.7rem}
+    .modal p{font-size:.88rem;line-height:1.75;color:var(--dim);margin-bottom:1.8rem}
+    .modal button{background:var(--silver);color:var(--ink);border:none;padding:.9rem 2.2rem;font-family:var(--Fh);font-size:.85rem;letter-spacing:.18em;text-transform:uppercase;cursor:none;transition:background .2s}
+    .modal button:hover{background:var(--chrome)}
+
+    footer{background:var(--ink);border-top:1px solid rgba(200,200,208,.1);padding:2.2rem 3rem;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:1rem}
+    .flogo{font-family:var(--Fh);font-size:1.2rem;font-weight:700;letter-spacing:.14em;color:var(--chrome);text-decoration:none}.flogo span{color:var(--silver2)}
+    .fcp{font-size:.7rem;letter-spacing:.1em;color:var(--dim)}
+    .fsoc{display:flex;gap:.8rem}
+    .fsoc a{width:32px;height:32px;border:1px solid rgba(200,200,208,.1);display:flex;align-items:center;justify-content:center;color:var(--dim);text-decoration:none;font-size:.74rem;font-family:var(--Fh);transition:border-color .2s,color .2s}
+    .fsoc a:hover{border-color:var(--silver);color:var(--silver)}
+
+    @media(max-width:900px){
+      nav{padding:1rem 1.4rem}
+      .navl{display:none}
+      .hamburger{display:flex}
+      .mobile-menu{display:flex}
+      .page-hero{padding:8rem 1.4rem 3rem}
+      .how-section{padding:3rem 1.4rem}
+      .steps{flex-direction:column}.step::after{display:none}
+      .booking-main{grid-template-columns:1fr;gap:3rem;padding:3rem 1.4rem}
+      .booking-sidebar{position:relative;top:0}
+      .fr{grid-template-columns:1fr}
+      .pay-methods{grid-template-columns:1fr}
+      footer{padding:1.8rem 1.4rem}
+    }
+  </style>
+</head>
+<body>
+<div id="cd"></div>
+
+<div class="modal-overlay" id="successModal">
+  <div class="modal">
+    <div class="mi">📸</div>
+    <h2>Request Sent!</h2>
+    <p>Your booking request has been received. Zan will hit you back within 24 hours to confirm the date and send your deposit invoice.</p>
+    <button onclick="document.getElementById('successModal').classList.remove('show')">Sounds Good →</button>
+  </div>
+</div>
+
+<div class="mobile-menu" id="mobileMenu">
+  <button class="m-close" onclick="closeMenu()">✕</button>
+  <a href="index.html" onclick="closeMenu()">Home</a>
+  <a href="index.html#gallery" onclick="closeMenu()">Gallery</a>
+  <a href="services.html" onclick="closeMenu()">Services</a>
+  <a href="about.html" onclick="closeMenu()">About</a>
+  <a href="contact.html" onclick="closeMenu()">Contact</a>
+  <a href="booking.html" class="m-cta" onclick="closeMenu()">Book & Pay</a>
+</div>
+
+<nav>
+  <a href="index.html" class="logo">Flicks<span>ByZan</span></a>
+  <ul class="navl">
+    <li><a href="index.html">Home</a></li>
+    <li><a href="index.html#gallery">Gallery</a></li>
+    <li><a href="services.html">Services</a></li>
+    <li><a href="about.html">About</a></li>
+    <li><a href="contact.html">Contact</a></li>
+    <li><a href="booking.html" class="ncta active">Book & Pay</a></li>
+  </ul>
+  <button class="hamburger" id="burger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<div class="page-hero">
+  <p class="sl">— Let's Make It Official</p>
+  <h1 class="st">Book &<br>Pay</h1>
+  <p class="ph-sub">Fill out the form below to request your shoot date. A 50% deposit locks in your slot.</p>
+</div>
+
+<div class="how-section">
+  <p class="sl">— How It Works</p>
+  <div class="steps reveal">
+    <div class="step"><div class="step-num">01</div><div class="step-title">Fill the Form</div><div class="step-desc">Tell me about your shoot — date, type, and vibe.</div></div>
+    <div class="step"><div class="step-num">02</div><div class="step-title">Get Confirmed</div><div class="step-desc">I'll hit you back within 24hrs to lock in the date.</div></div>
+    <div class="step"><div class="step-num">03</div><div class="step-title">Pay Deposit</div><div class="step-desc">50% deposit via your chosen payment method secures your slot.</div></div>
+    <div class="step"><div class="step-num">04</div><div class="step-title">Shoot Day</div><div class="step-desc">We link up, capture the heat, and deliver the flicks.</div></div>
+  </div>
+</div>
+
+<div class="booking-main">
+  <form class="bform reveal" onsubmit="submitBooking(event)">
+    <h2>Booking Request</h2>
+    <p class="hint">Fill out all the details and I'll reach out to confirm your slot within 24 hours.</p>
+    <div class="fr">
+      <div class="fg"><label>First Name *</label><input type="text" placeholder="Jordan" required/></div>
+      <div class="fg"><label>Last Name *</label><input type="text" placeholder="Smith" required/></div>
+    </div>
+    <div class="fr">
+      <div class="fg"><label>Email *</label><input type="email" placeholder="you@example.com" required/></div>
+      <div class="fg"><label>Phone Number *</label><input type="tel" placeholder="+1 (000) 000-0000" required/></div>
+    </div>
+    <div class="fr">
+      <div class="fg">
+        <label>Package *</label>
+        <select required><option value="">— Select a Package —</option><option>The Quick Flick — Portrait/Lifestyle</option><option>The Main Event — Sports/Brand (4hr)</option><option>The Full Send — Full Day Custom</option><option>Brand / Commercial (Custom Quote)</option></select>
+      </div>
+      <div class="fg"><label>Preferred Shoot Date *</label><input type="date" required/></div>
+    </div>
+    <div class="fg"><label>Location / City</label><input type="text" placeholder="e.g. Atlanta, GA — or a specific venue"/></div>
+    <div class="fg">
+      <label>Add-Ons (optional)</label>
+      <select><option value="">— None —</option><option>Rush Delivery (+$XXX)</option><option>Behind the Scenes Video (+$XXX)</option><option>Print Package (+$XXX)</option><option>Social Media Pack (+$XX)</option></select>
+    </div>
+    <div class="fg"><label>Tell Me About the Shoot</label><textarea placeholder="What's the vibe? Any special requirements, athletes involved, brand details…"></textarea></div>
+    <div class="fg">
+      <label>Preferred Payment Method for Deposit *</label>
+      <div class="pay-methods">
+        <div class="pay-opt"><input type="radio" name="pay" id="paypal" value="PayPal" checked/><label for="paypal"><span class="pi">💳</span><div><div class="pname">PayPal</div></div></label></div>
+        <div class="pay-opt"><input type="radio" name="pay" id="cashapp" value="Cash App"/><label for="cashapp"><span class="pi">💵</span><div><div class="pname">Cash App</div></div></label></div>
+        <div class="pay-opt"><input type="radio" name="pay" id="venmo" value="Venmo"/><label for="venmo"><span class="pi">📲</span><div><div class="pname">Venmo</div></div></label></div>
+        <div class="pay-opt"><input type="radio" name="pay" id="card" value="Card"/><label for="card"><span class="pi">🏦</span><div><div class="pname">Card</div></div></label></div>
+      </div>
+      <div class="deposit-note">ℹ️ <strong>No payment charged now.</strong> After confirming your date I'll send a deposit invoice via your chosen method.</div>
+    </div>
+    <button type="submit" class="submit-btn">Request My Shoot →</button>
+  </form>
+
+  <div class="booking-sidebar reveal">
+    <div class="side-card">
+      <h3>Pay Directly Now</h3>
+      <p style="font-size:.8rem;color:var(--dim);margin-bottom:1.2rem;line-height:1.7">Already confirmed with Zan? Send your deposit here:</p>
+      <div class="pay-btn-row">
+        <a href="https://paypal.me/YOURNAME" target="_blank" class="pay-direct-btn"><span class="picon">💳</span><div class="ptext"><div class="pn">PayPal</div><div class="ph">paypal.me/YOURNAME</div></div><span class="parrow">→</span></a>
+        <a href="https://cash.app/$YOURTAG" target="_blank" class="pay-direct-btn"><span class="picon">💵</span><div class="ptext"><div class="pn">Cash App</div><div class="ph">$YourCashTag</div></div><span class="parrow">→</span></a>
+        <a href="https://venmo.com/YOURNAME" target="_blank" class="pay-direct-btn"><span class="picon">📲</span><div class="ptext"><div class="pn">Venmo</div><div class="ph">@YourVenmo</div></div><span class="parrow">→</span></a>
+        <a href="https://buy.stripe.com/YOURLINK" target="_blank" class="pay-direct-btn"><span class="picon">🏦</span><div class="ptext"><div class="pn">Card / Stripe</div><div class="ph">Debit or Credit Card</div></div><span class="parrow">→</span></a>
+      </div>
+    </div>
+    <div class="side-card">
+      <h3>Booking Info</h3>
+      <ul>
+        <li><span>Deposit Required</span><strong>50%</strong></li>
+        <li><span>Balance Due</span><strong>Shoot Day</strong></li>
+        <li><span>Confirmation</span><strong>Within 24hrs</strong></li>
+        <li><span>Reschedule Policy</span><strong>48hr notice</strong></li>
+        <li><span>Cancellations</span><strong>Deposit non-refundable</strong></li>
+      </ul>
+    </div>
+    <div class="side-card contact-side">
+      <h3>Questions First?</h3>
+      <p style="font-size:.8rem;color:var(--dim);line-height:1.7">Not sure what package fits? Hit me up before booking.</p>
+      <a href="tel:+10000000000">📞 Call Zan: +1 (000) 000-0000</a>
+      <a href="mailto:hello@flicksbyzan.com">✉ hello@flicksbyzan.com</a>
+      <a href="https://instagram.com/flicksbyzan" target="_blank">📷 DM @flicksbyzan</a>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html" class="flogo">Flicks<span>ByZan</span></a>
+  <div class="fcp">© 2025 FlicksByZan. All rights reserved.</div>
+  <div class="fsoc">
+    <a href="https://instagram.com/flicksbyzan" target="_blank">IG</a>
+    <a href="#">TK</a>
+    <a href="contact.html">☏</a>
+  </div>
+</footer>
+
+<script>
+  const cd=document.getElementById('cd');
+  document.addEventListener('mousemove',e=>{cd.style.left=e.clientX+'px';cd.style.top=e.clientY+'px'});
+  const obs=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');obs.unobserve(e.target)}}),{threshold:.08});
+  document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
+  function submitBooking(e){e.preventDefault();document.getElementById('successModal').classList.add('show');e.target.reset();}
+  function toggleMenu(){const o=document.getElementById('mobileMenu').classList.toggle('open');document.getElementById('burger').classList.toggle('open',o);document.body.style.overflow=o?'hidden':'';}
+  function closeMenu(){document.getElementById('mobileMenu').classList.remove('open');document.getElementById('burger').classList.remove('open');document.body.style.overflow='';}
+  document.getElementById('mobileMenu').addEventListener('click',e=>{if(e.target===document.getElementById('mobileMenu'))closeMenu()});
+</script>
+</body>
+</html>
