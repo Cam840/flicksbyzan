@@ -36,7 +36,7 @@
     .reveal{opacity:0;transform:translateY(28px);transition:opacity .7s ease,transform .7s ease}
     .reveal.on{opacity:1;transform:none}
 
-    .page-hero{padding:10rem 3rem 4rem;background:var(--dark);border-bottom:1px solid rgba(200,200,208,.07)}
+    .page-hero{padding:10rem 3rem 4rem;background:var(--dark);border-bottom:1px solid rgba(200,200,208,.07);scroll-margin-top:0}
     .ph-sub{font-size:.9rem;color:var(--dim);margin-top:1rem;max-width:480px;line-height:1.7}
 
     /* PACKAGES */
@@ -93,6 +93,7 @@
     .fsoc a:hover{border-color:var(--silver);color:var(--silver)}
 
     @media(max-width:900px){
+      .page-hero{padding:8rem 1.4rem 3rem}
       nav{padding:1rem 1.4rem}.page-hero,.packages,.addons,.faq-section{padding:4rem 1.4rem}
       .pkg-grid{grid-template-columns:1fr;gap:1.2rem}
       .addon-grid{grid-template-columns:1fr 1fr}
