@@ -123,8 +123,20 @@
     /*  tabs */
 
     /* ── Simple uniform grid ── */
-    .simple-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;padding:0 6px}
-    .gp{position:relative;overflow:hidden;cursor:none;aspect-ratio:1;transition:opacity .4s,filter .4s}
+    .carousel-wrap{position:relative;overflow:hidden;padding:0 0 1.5rem}
+    .simple-grid{display:flex;gap:16px;padding:0 10%;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;cursor:grab}
+    .simple-grid::-webkit-scrollbar{display:none}
+    .simple-grid.dragging{cursor:grabbing}
+    .gp{position:relative;overflow:hidden;cursor:none;aspect-ratio:4/5;flex:0 0 62%;scroll-snap-align:center;border-radius:4px;transition:transform .4s,filter .4s,opacity .4s}
+    .gp.not-center{transform:scale(.93);opacity:.6;filter:brightness(.6)}
+    @media(max-width:900px){
+      .simple-grid{padding:0 8%;gap:12px}
+      .gp{flex:0 0 78%}
+    }
+    @media(max-width:560px){
+      .simple-grid{padding:0 6%;gap:10px}
+      .gp{flex:0 0 84%}
+    }
     .gp img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .65s cubic-bezier(.25,.46,.45,.94),filter .6s}
     .gp:hover img{transform:scale(1.06);filter:brightness(.5) saturate(.6) contrast(1.1)}
     .gpf{position:absolute;inset:0;border:1px solid rgba(200,200,208,0);transition:border-color .35s;pointer-events:none}
@@ -272,13 +284,17 @@
   </div>
 
   <!-- Clean uniform grid — works perfectly on all screen sizes -->
-  <div class="simple-grid reveal">
-    <div class="gp" data-cat="sports"><img src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=600&q=82&fit=crop" alt="Basketball" loading="lazy"/><div class="gpf"></div><div class="gpl">Basketball — Action</div></div>
-    <div class="gp" data-cat="brand"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=600&q=82&fit=crop" alt="Footwear" loading="lazy"/><div class="gpf"></div><div class="gpl">Brand — Footwear</div></div>
-    <div class="gp" data-cat="sports"><img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=600&q=82&fit=crop" alt="Football" loading="lazy"/><div class="gpf"></div><div class="gpl">Football — Stadium</div></div>
-    <div class="gp" data-cat="sports"><img src="https://images.unsplash.com/photo-1483721310020-03333e577078?w=600&q=82&fit=crop" alt="Track" loading="lazy"/><div class="gpf"></div><div class="gpl">Track — Sprint</div></div>
-    <div class="gp" data-cat="lifestyle"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=600&q=82&fit=crop" alt="Lifestyle" loading="lazy"/><div class="gpf"></div><div class="gpl">Lifestyle — Street</div></div>
-    <div class="gp" data-cat="sports"><img src="https://images.unsplash.com/photo-1566577739112-5180d4bf9390?w=600&q=82&fit=crop&crop=top" alt="Baseball" loading="lazy"/><div class="gpf"></div><div class="gpl">Baseball — Game Day</div></div>
+  <div class="carousel-wrap">
+      <div class="simple-grid reveal" id="carousel">
+        <div class="gp"><img src="https://images.unsplash.com/photo-1504450758481-7338eba7524a?w=800&q=85&fit=crop" alt="Basketball" loading="lazy"/><div class="gpf"></div><div class="gpl">Basketball — Action</div></div>
+        <div class="gp"><img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=800&q=85&fit=crop" alt="Footwear" loading="lazy"/><div class="gpf"></div><div class="gpl">Brand — Footwear</div></div>
+        <div class="gp"><img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?w=800&q=85&fit=crop" alt="Football" loading="lazy"/><div class="gpf"></div><div class="gpl">Football — Stadium</div></div>
+        <div class="gp"><img src="https://images.unsplash.com/photo-1483721310020-03333e577078?w=800&q=85&fit=crop" alt="Track" loading="lazy"/><div class="gpf"></div><div class="gpl">Track — Sprint</div></div>
+        <div class="gp"><img src="https://images.unsplash.com/photo-1517649763962-0c623066013b?w=800&q=85&fit=crop" alt="Cycling" loading="lazy"/><div class="gpf"></div><div class="gpl">Cycling — Endurance</div></div>
+        <div class="gp"><img src="https://images.unsplash.com/photo-1529156069898-49953e39b3ac?w=800&q=85&fit=crop" alt="Lifestyle" loading="lazy"/><div class="gpf"></div><div class="gpl">Lifestyle — Street</div></div>
+      </div>
+      <!-- Dot indicators -->
+      <div id="dots" style="display:flex;justify-content:center;gap:8px;margin-top:1.2rem"></div>
   </div>
 
   <div class="ig-cta reveal">
@@ -359,6 +375,51 @@
   }
   // Close menu if user taps outside
   menu.addEventListener('click',e=>{if(e.target===menu)closeMenu()});
+  // ── CAROUSEL ──────────────────────────────────
+  const car = document.getElementById('carousel');
+  const dotsWrap = document.getElementById('dots');
+  const cards = car ? [...car.querySelectorAll('.gp')] : [];
+
+  // Build dots
+  cards.forEach((_,i)=>{
+    const d=document.createElement('button');
+    d.style.cssText='width:6px;height:6px;border-radius:50%;border:none;background:var(--dim);transition:background .3s,transform .3s;cursor:none;padding:0';
+    d.onclick=()=>scrollToCard(i);
+    dotsWrap.appendChild(d);
+  });
+
+  function scrollToCard(i){
+    const card=cards[i];
+    const offset=card.offsetLeft - (car.offsetWidth/2) + (card.offsetWidth/2);
+    car.scrollTo({left:offset,behavior:'smooth'});
+  }
+
+  function updateCarousel(){
+    const center=car.scrollLeft + car.offsetWidth/2;
+    let closest=0, minDist=Infinity;
+    cards.forEach((c,i)=>{
+      const dist=Math.abs(c.offsetLeft + c.offsetWidth/2 - center);
+      if(dist<minDist){minDist=dist;closest=i;}
+    });
+    cards.forEach((c,i)=>{
+      c.classList.toggle('not-center', i!==closest);
+    });
+    [...dotsWrap.children].forEach((d,i)=>{
+      d.style.background = i===closest ? 'var(--silver)' : 'var(--dim)';
+      d.style.transform = i===closest ? 'scale(1.5)' : 'scale(1)';
+    });
+  }
+
+  if(car){
+    car.addEventListener('scroll', updateCarousel, {passive:true});
+    setTimeout(()=>{scrollToCard(0);updateCarousel();}, 300);
+
+    // Mouse drag support for desktop
+    let isDown=false, startX, scrollStart;
+    car.addEventListener('mousedown',e=>{isDown=true;startX=e.pageX;scrollStart=car.scrollLeft;car.classList.add('dragging')});
+    window.addEventListener('mouseup',()=>{isDown=false;car.classList.remove('dragging')});
+    car.addEventListener('mousemove',e=>{if(!isDown)return;e.preventDefault();car.scrollLeft=scrollStart-(e.pageX-startX)*1.5});
+  }
 </script>
 </body>
 </html>
